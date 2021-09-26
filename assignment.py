@@ -19,7 +19,7 @@ import numpy as np
 
 S = np.array([[-1,-1,0,0,0,1], [1,0,0,0,-1,0],[0,1,-1,-1,0,0]])
 S
-from sympy import Equality, Matrix, symbols
+
 v = Matrix(symbols("v1:7")) # Use the symbolic math library `sympy` to carry out Sv = 0  symbolically to check if the balances are correct.
 Equality(Matrix(S) * v, 0, evaluate=False) # How do you know it's correct? 
 
