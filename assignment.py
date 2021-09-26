@@ -1,11 +1,5 @@
-
-###### Ignore this
-import pytest
-import hashlib
-_ = 123456789  # just a wrong number, please ignore
-###### Stop ignoring
-
 import numpy as np
+
 
 # Metabolic Flux Analysis
 
@@ -15,33 +9,50 @@ import numpy as np
 # The reaction formulas are:
 # v1: 1 A -> 1 B
 # v2: 1 A -> 1 C
-# v3: 1 C ->
-# v4: 1 C ->
-# v5: 1 B ->
-# v6: 1 A -> 
+# v3: 1 C -> EX_v3
+# v4: 1 C -> EX_v4
+# v5: 1 B -> Ex_v5
+# v6: EX_v6 -> 1 A
 
 # replace [[]] with the stoichiometric matrix.
-S = np.array([[]])
+
+
+S = np.array([[-1,-1,0,0,0,1], [1,0,0,0,-1,0],[0,1,-1,-1,0,0]])
+S
+from sympy import Equality, Matrix, symbols
+v = Matrix(symbols("v1:7")) # Use the symbolic math library `sympy` to carry out Sv = 0  symbolically to check if the balances are correct.
+Equality(Matrix(S) * v, 0, evaluate=False) # How do you know it's correct? 
+
 
 
 # 2. Calculate how many fluxes need to be measured (degrees of freedom).
 
 # Assign your solution to the following variable (replace _ with your solution;
 # cannot be just a number; should be a computation based on S)
+from numpy.linalg import matrix_rank
+S.shape
+S.shape[1]
+matrix_rank(S)
+degrees_of_freedom = S.shape[1] - matrix_rank(S) # columnas - filas
+degrees_of_freedom
 
-degrees_of_freedom = _
+# 3. Based on measured fluxes v4 = 2.5, v5 = 2, and v6 = -10, calculate v1-v3.
 
-
-# 3. Based on measured fluxes v4 = 2.5, v5 = 2, and v6 = 10, calculate v1-v3.
 
 # Put you're intermediate steps here ...
 
-# Assign the final solution here (replace _ with your final step)
-# v_c needs to be a numpy.array containing the three calculated fluxes v1-v3
-# Ideally you should get to v_c through a computation involving S and the
-# measured fluxes v4-v6 as covered in the lecture.
+S_c = np.array(S[:,0:3])
+S_m = np.array(S[:,3:])
+v_m = np.array([2.5,2,-10])
 
-v_c = _
+# Assign the final solution here (replace _ with your final step) ;  v_c needs to be a numpy.array containing the three calculated fluxes v1-v3
+# Ideally you should get to v_c through a computation involving S and the measured fluxes v4-v6 as covered in the lecture.
+
+### ¡¡¡ SIGNO FLUJOS |abs| ????? !!! 
+
+V_c = -np.linalg.inv(S_c).dot(S_m.dot(v_m))
+V_c                                             # I copy output to line 62
+v_c = np.array([  2. , -12. , -14.5])
 
 
 # Tests come in the end
@@ -54,4 +65,3 @@ def test_degrees_of_freedom():
 
 def test_mfa_calculation():
     assert v_c.sum() == 15.5
-###### this
